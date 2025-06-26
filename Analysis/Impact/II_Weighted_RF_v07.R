@@ -20,13 +20,13 @@ library(gridtext)
 library(gridExtra)
 library(grid)
 
-#define input/output path 
-datapath <- paste0(getwd(), "/Database_release_v01/Input/")
-figpath <- paste(getwd(), sep = "/", "Database_release_v01/Output/Manuscript/Figures/")
-tablepath <- paste(getwd(), sep = "/", "Database_release_v01/Output/Manuscript/Tables/")
+#define output/input paths
+figpath <- paste(getwd(), "/Output/Figures/", sep = "")
+tablepath <- paste(getwd(), "/Output/Tables/", sep = "")
+datapath <- paste(getwd(), "/Input/", sep = "")
 
 #load data
-input_data <- readRDS(paste(datapath, "RF_input_data_10_06_25_weighted.rds"))
+input_data <- readRDS(paste(datapath, "RF_input_data_10_06_25_weighted.rds", sep = ""))
 
 #extract separate prepared biodiv and cc datasets
 data_biodiv <- input_data[[1]]
@@ -62,7 +62,7 @@ set.seed(123)
 rf <- ranger::ranger(form, data = data_biodiv, max.depth = 10, num.trees = 1000, mtry = 7,
                      case.weights = data_biodiv$Weights) #balance contribution of observations because of pseudoreplication per scenario)
 
-sink(paste(tablepath, "Biodiv_RF_output.txt"))
+sink(paste(tablepath, "Biodiv_RF_output.txt", sep = ""))
 print(rf)
 sink()
 
@@ -125,7 +125,7 @@ shap_biodiv_bar
 
 shap_biodiv_bar|shap_biodiv_bee 
 
-pdf(paste(figpath, "Shap_Biodiversity_weighted.pdf"), height = 6, width = 16)
+pdf(paste(figpath, "Shap_Biodiversity_weighted.pdf", sep = ""), height = 6, width = 16)
 
 a <- (shap_biodiv_bar|shap_biodiv_bee) +
   plot_layout(guides = "collect") +
@@ -168,7 +168,7 @@ set.seed(456)
 rf <- ranger::ranger(form, data = data_cc, max.depth = 10, num.trees = 1000, mtry = 9,
                      case.weights = data_cc$Weights) #balance contribution of observations because of pseudoreplication per scenario)
 
-sink(paste(tablepath, "CC_RF_output.txt"))
+sink(paste(tablepath, "CC_RF_output.txt", sep = ""))
 print(rf)
 sink()
 
@@ -232,7 +232,7 @@ shap_cc_bar
 
 shap_cc_bar|shap_cc_bee
 
-pdf(paste(figpath, "Shap_ClimateChange_weighted.pdf"), height = 6, width = 16)
+pdf(paste(figpath, "Shap_ClimateChange_weighted.pdf", sep = ""), height = 6, width = 16)
 
 b <- (shap_cc_bar|shap_cc_bee) +
   plot_annotation(title = "Climate change model") &
@@ -262,7 +262,7 @@ table_grob <- richtext_grob(
   gp = gpar(fontsize = 14), x = 0.3, y = 0.5, hjust = 0
 )
 
-pdf(paste(figpath, "SHAP_cc_biodiv_weighted.pdf"), height = 12, width = 13)
+pdf(paste(figpath, "SHAP_cc_biodiv_weighted.pdf", sep = ""), height = 12, width = 13)
 wrap_elements(b)/wrap_elements(a)/table_grob +
   plot_layout(heights = c(1, 1, 0.11)) +
   plot_annotation(tag_levels = "a", tag_prefix = "(", tag_suffix = ")") 
@@ -282,7 +282,7 @@ RColorBrewer::display.brewer.pal(7, "Dark2")
 #cols = c("red", "red", rep("grey", 5))
 
 #final SHAP dependence plot (for SI)
-pdf(paste(figpath, "Climate_indicator_StudyNumber_SHAP_dependence.pdf"), width = 12, height = 12)
+pdf(paste(figpath, "Climate_indicator_StudyNumber_SHAP_dependence.pdf", sep = ""), width = 12, height = 12)
 dependence <- sv_dependence(sh, v = c("Study_nr."), color_var = c("Climate_indicator"), interactions = F, viridis_args = list(option = "turbo")) +
   labs(color = "") +
   scale_color_brewer(palette = "Dark2") +
@@ -298,7 +298,7 @@ dependence <- sv_dependence(sh, v = c("Study_nr."), color_var = c("Climate_indic
 dependence
 dev.off()
 
-pdf(paste(figpath, "Climate_indicator_Model_SHAP_dependence.pdf"), width = 18, height = 16)
+pdf(paste(figpath, "Climate_indicator_Model_SHAP_dependence.pdf", sep = ""), width = 18, height = 16)
 dependence2 <- sv_dependence(sh, v = c("Model"), color_var = c("Climate_indicator"), interactions = F, viridis_args = list(option = "turbo")) +
   labs(color = "Climate indicator") +
   scale_color_brewer(palette = "Dark2") +

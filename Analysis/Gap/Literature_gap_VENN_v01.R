@@ -13,12 +13,15 @@ library(tidyverse)
 library(ggpubr)
 library(patchwork)
 library(colorspace)
+library(eulerr)
+library(ggtext)
 
 #define paths
-figpath <- paste(getwd(), sep = "/", "Database_release_v01/Output/Manuscript/Figures/")
-tablepath <- paste(getwd(), sep = "/", "Database_release_v01/Output/Manuscript/Tables/")
+figpath <- paste(getwd(), "/Output/Figures/", sep = "")
+tablepath <- paste(getwd(), "/Output/Tables/", sep = "")
+datapath <- paste(getwd(), "/Input/", sep = "")
 
-WP3_Subset <- readRDS(file = paste(getwd(), sep = "/", "Database_release_v01/Input/10_06_25_Final_Data_Perc_Ch.Rds"))
+WP3_Subset <- readRDS(paste(datapath, "10_06_25_Final_Data_Perc_Ch.Rds", sep = ""))
 
 ###
 #2.) Venn diagram: Create a plot showing the no. of scenarios & studies together with their main focus####
@@ -39,7 +42,7 @@ Studies_Count <- Studies_Count %>%
 
 Tabular_output <- Studies_Count
 
-write.csv(Tabular_output, paste(tablepath, "Main_focus.csv"))
+write.csv(Tabular_output, paste(tablepath, "Main_focus.csv", sep = ""))
 
 #VENN diagram output
 scenarios_count <- subset(Studies_Count, Studies_Count$Type == "Scenarios")
@@ -252,7 +255,7 @@ label_sdgs_unique <- label_sdgs %>% distinct(SDG, .keep_all = TRUE)
 ###
 
 #plot circular histogram
-pdf(figpath %+% "Indicators_gap_22_02_25.pdf", height = 15, width = 13, paper = "special")
+pdf(paste(figpath, "Indicators_gap_22_02_25.pdf", sep = ""), height = 15, width = 13, paper = "special")
 
 histogram <- ggplot(sums, aes(x=as.factor(id), y=Percentage_Indicators, fill = SDG)) +     
   geom_bar(stat="identity") +
@@ -279,7 +282,7 @@ dev.off()
 #6.) Final plot (Venn diagram + circular barplot)####
 ###
 
-pdf(paste(figpath, "Impact_gap.pdf"), width = 14, height = 20)
+pdf(paste(figpath, "Impact_gap.pdf", sep = ""), width = 14, height = 20)
 
 final <- (wrap_elements(Scenarios_plot) + wrap_elements(Studies_plot))/histogram +
   plot_layout(heights = c(0.7, 2)) +

@@ -12,9 +12,10 @@
 #load libraries
 library(tidyverse)
 
-#define input/output path 
-datapath <- paste0(getwd(), "/Database_release_v01/Input/")
-figpath <- paste(getwd(), sep = "/", "Database_release_v01/Output/Manuscript/Figures/")
+#define output/input paths
+figpath <- paste(getwd(), "/Output/Figures/", sep = "")
+tablepath <- paste(getwd(), "/Output/Tables/", sep = "")
+datapath <- paste(getwd(), "/Input/", sep = "")
 
 #load data
 data <- readRDS(paste(datapath, "10_06_25_Reference_harmonized_data.rds"))
@@ -55,7 +56,7 @@ data_counts_inter <- data_plot %>%
 #3.) Final boxplot####
 ###
 
-pdf(paste(figpath, "boxplot_no_interventions.pdf"), height = 4, width = 8)
+pdf(paste(figpath, "boxplot_no_interventions.pdf", sep = ""), height = 4, width = 8)
 ggplot(data = data_plot, aes(x = Impact, y = Interventions_category, fill = Impact_class)) +
   #facet_wrap(~Impact_class)+
   geom_boxplot() +
@@ -77,3 +78,4 @@ ggplot(data = data_plot, aes(x = Impact, y = Interventions_category, fill = Impa
     plot.title = element_text(face = "bold", hjust = 0.5,size=14),
     strip.text = element_text(size = 14)) 
 dev.off()
+

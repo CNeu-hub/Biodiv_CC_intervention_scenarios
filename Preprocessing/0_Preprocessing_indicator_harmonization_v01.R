@@ -16,13 +16,13 @@ library(wordcloud) #wordcloud plots (if needed)
 library(tm) #needed for text mining analysis
 
 #load needed functions (developed to work with database)
-source("Database_release_v01/Functions/Coding_functions_v03.R")
+source("Functions/Coding_functions_v03.R")
 
 #define output/input paths
-datapath <- paste(getwd(), sep = "/", "Database_release_v01/Input/")
+datapath <- paste(getwd(), "/Input/", sep = "")
 
 #load data 
-WP3_Subset <- readRDS(file = paste(datapath, "10_06_25_Final_Data_Perc_Ch.Rds"))
+WP3_Subset <- readRDS(paste(datapath, "10_06_25_Final_Data_Perc_Ch.Rds", sep = ""))
 
 #load reference lookup table, to define reference scenarios 
 ref_scen_lookup <- read_xlsx(paste(datapath, "Ref_scenarios_lookupv02.xlsx", sep = ""))

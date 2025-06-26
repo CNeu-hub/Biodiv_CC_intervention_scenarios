@@ -15,11 +15,12 @@ library(patchwork)
 library(igraph)
 
 #load needed functions (developed to work with database)
-source("Database_release_v01/Functions/Jaccard_similarity_v01.R")
+source("Functions/Jaccard_similarity_v01.R")
 
-#define input/output path 
-datapath <- paste0(getwd(), "/Database_release_v01/Input/")
-figpath <- paste(getwd(), sep = "/", "Database_release_v01/Output/Manuscript/Figures/")
+#define output/input paths
+figpath <- paste(getwd(), "/Output/Figures/", sep = "")
+tablepath <- paste(getwd(), "/Output/Tables/", sep = "")
+datapath <- paste(getwd(), "/Input/", sep = "")
 
 ###
 #2.) Create input data####
@@ -55,7 +56,7 @@ subset <- jaccard$Jaccard_subset
 g <- graph_from_data_frame(subset, directed = FALSE)
 
 #create an pdf export of jaccard similarity of interventions and clusters 
-pdf(paste(figpath, "Jaccard_clustering_biodiv_RF.pdf"), width = 18, height = 12)
+pdf(paste(figpath, "Jaccard_clustering_biodiv_RF.pdf", sep = ""), width = 18, height = 12)
 jaccard$Plot
 plot.igraph(g, main = "Louvain clusters of interventions with jaccard similarity >0.7 (n = 235 scenarios)")
 dev.off()
@@ -102,7 +103,7 @@ subset <- jaccard$Jaccard_subset
 g <- graph_from_data_frame(subset, directed = FALSE)
 
 #create an pdf export of jaccard similarity of interventions and clusters 
-pdf(paste(figpath, "Jaccard_clustering_cc_RF.pdf"), width = 18, height = 12)
+pdf(paste(figpath, "Jaccard_clustering_cc_RF.pdf", sep = ""), width = 18, height = 12)
 jaccard$Plot
 plot.igraph(g, main = "Louvain clusters of interventions with jaccard similarity >0.7 (n = 235 scenarios)")
 dev.off()
@@ -132,6 +133,6 @@ data_cc_final <- data_cc %>%
   select(Index, Study_nr., Model,, any_of(interventions)[colSums(select(., any_of(interventions))) > 4], Cluster_1, Cluster_3, Climate_impact, Climate_indicator, Interventions_number)
 
 #export output data for later input to random forest modelling
-saveRDS(list(data_biodiv_final, data_cc_final), file = paste(datapath, "RF_input_data_10_06_25_weighted.rds"))
+saveRDS(list(data_biodiv_final, data_cc_final), file = paste(datapath, "RF_input_data_10_06_25_weighted.rds", sep = ""))
 
 

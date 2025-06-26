@@ -1,0 +1,15 @@
+Ranger result
+
+Call:
+ ranger::ranger(form, data = data_biodiv, max.depth = 10, num.trees = 1000,      mtry = 7, case.weights = data_biodiv$Weights) 
+
+Type:                             Regression 
+Number of trees:                  1000 
+Sample size:                      286 
+Number of independent variables:  19 
+Mtry:                             7 
+Target node size:                 5 
+Variable importance mode:         none 
+Splitrule:                        variance 
+OOB prediction error (MSE):       0.2831197 
+R squared (OOB):                  0.7299064 
