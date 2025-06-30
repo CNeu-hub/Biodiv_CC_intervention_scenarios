@@ -262,7 +262,7 @@ table_grob <- richtext_grob(
   gp = gpar(fontsize = 14), x = 0.3, y = 0.5, hjust = 0
 )
 
-pdf(paste(figpath, "SHAP_cc_biodiv_weighted.pdf", sep = ""), height = 12, width = 13)
+pdf(paste(figpath, "Figure_4.pdf", sep = ""), height = 12, width = 13)
 wrap_elements(b)/wrap_elements(a)/table_grob +
   plot_layout(heights = c(1, 1, 0.11)) +
   plot_annotation(tag_levels = "a", tag_prefix = "(", tag_suffix = ")") 
@@ -282,23 +282,7 @@ RColorBrewer::display.brewer.pal(7, "Dark2")
 #cols = c("red", "red", rep("grey", 5))
 
 #final SHAP dependence plot (for SI)
-pdf(paste(figpath, "Climate_indicator_StudyNumber_SHAP_dependence.pdf", sep = ""), width = 12, height = 12)
-dependence <- sv_dependence(sh, v = c("Study_nr."), color_var = c("Climate_indicator"), interactions = F, viridis_args = list(option = "turbo")) +
-  labs(color = "") +
-  scale_color_brewer(palette = "Dark2") +
-  theme_classic() +
-  guides(color = guide_legend(override.aes = list(size = 3), ncol = 3)) +
-  plot_layout(nrow = 2, ncol = 1, guides = "collect") &
-  theme(legend.position = "bottom",  axis.text.x = element_text(angle = 45, hjust = 1, size = 10),
-        legend.justification = "left",
-        axis.text.y = element_text(size = 14), 
-        axis.title = element_text(size = 14, face = "bold"), 
-        legend.title = element_text(size = 14),
-        legend.text = element_text(size = 14)) 
-dependence
-dev.off()
-
-pdf(paste(figpath, "Climate_indicator_Model_SHAP_dependence.pdf", sep = ""), width = 18, height = 16)
+pdf(paste(figpath, "Supplemental_figure_S7.pdf", sep = ""), width = 18, height = 16)
 dependence2 <- sv_dependence(sh, v = c("Model"), color_var = c("Climate_indicator"), interactions = F, viridis_args = list(option = "turbo")) +
   labs(color = "Climate indicator") +
   scale_color_brewer(palette = "Dark2") +

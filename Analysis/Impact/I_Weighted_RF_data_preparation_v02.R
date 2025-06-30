@@ -56,7 +56,7 @@ subset <- jaccard$Jaccard_subset
 g <- graph_from_data_frame(subset, directed = FALSE)
 
 #create an pdf export of jaccard similarity of interventions and clusters 
-pdf(paste(figpath, "Jaccard_clustering_biodiv_RF.pdf", sep = ""), width = 18, height = 12)
+pdf(paste(figpath, "Supplemental_figure_S6.pdf", sep = ""), width = 18, height = 12)
 jaccard$Plot
 plot.igraph(g, main = "Louvain clusters of interventions with jaccard similarity >0.7 (n = 235 scenarios)")
 dev.off()
@@ -103,9 +103,9 @@ subset <- jaccard$Jaccard_subset
 g <- graph_from_data_frame(subset, directed = FALSE)
 
 #create an pdf export of jaccard similarity of interventions and clusters 
-pdf(paste(figpath, "Jaccard_clustering_cc_RF.pdf", sep = ""), width = 18, height = 12)
+pdf(paste(figpath, "Supplemental_figure_S5.pdf", sep = ""), width = 18, height = 12)
 jaccard$Plot
-plot.igraph(g, main = "Louvain clusters of interventions with jaccard similarity >0.7 (n = 235 scenarios)")
+plot.igraph(g, main = "Louvain clusters of interventions with jaccard similarity >0.7 (n = 372 scenarios)")
 dev.off()
 
 #components clustering, finds maximal connected pairs of interventions (all pairs that are connected with each other)

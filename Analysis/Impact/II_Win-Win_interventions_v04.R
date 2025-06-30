@@ -56,7 +56,7 @@ subset <- jaccard$Jaccard_subset
 #create graph with Jaccard similarity as edge weights
 g <- graph_from_data_frame(subset, directed = FALSE)
 
-pdf(paste(figpath, "Jaccard_clustering_win_lose.pdf", sep = ""), width = 14, height = 10)
+pdf(paste(figpath, "Supplemental_figure_S4.pdf", sep = ""), width = 14, height = 10)
 jaccard$Plot
 plot.igraph(g, main = "Louvain clusters of interventions with jaccard similarity >0.7 (n = 190 scenarios)")
 dev.off()
@@ -179,7 +179,7 @@ table_grob <- richtext_grob(
   gp = gpar(fontsize = 14), x = 0.053, y = 0.5, hjust = 0
 )
 
-pdf(paste(figpath, "Interventions_Impact_Synergies_22_05_25.pdf", sep = ""), width = 13, height = 12)
+pdf(paste(figpath, "Figure_3.pdf", sep = ""), width = 13, height = 12)
 
 grid.arrange(a, table_grob, heights = c(3, 0.3))
 

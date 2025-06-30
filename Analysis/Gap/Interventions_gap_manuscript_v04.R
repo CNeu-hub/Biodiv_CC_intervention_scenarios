@@ -263,7 +263,7 @@ e <- d/b/c +
   plot_layout(heights = c(0.25,1,1), axis_titles = "collect_x")
 e
 
-pdf(paste(figpath, "Interventions_v06_12_06_25.pdf", sep = ""), height = 10, width = 14)
+pdf(paste(figpath, "Figure_2.pdf", sep = ""), height = 10, width = 14)
 combined_plot <- (a|free(e, side = "b", type = "space")) + plot_layout(widths = c(0.7, 0.3)) + plot_annotation(tag_levels = "a", tag_prefix = "(", tag_suffix = ")") 
 combined_plot
 dev.off()

@@ -282,7 +282,7 @@ dev.off()
 #6.) Final plot (Venn diagram + circular barplot)####
 ###
 
-pdf(paste(figpath, "Impact_gap.pdf", sep = ""), width = 14, height = 20)
+pdf(paste(figpath, "Figure_1.pdf", sep = ""), width = 14, height = 20)
 
 final <- (wrap_elements(Scenarios_plot) + wrap_elements(Studies_plot))/histogram +
   plot_layout(heights = c(0.7, 2)) +
