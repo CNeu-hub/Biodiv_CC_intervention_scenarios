@@ -15,6 +15,7 @@ library(RColorBrewer) #color palettes
 library(ggh4x) #individual facet grids customization for ggplot2
 library(ggpubr)
 library(patchwork)
+library(readxl)
 
 #load functions 
 source("Functions/Coding_functions_v03.R")
@@ -28,7 +29,7 @@ datapath <- paste(getwd(), "/Input/", sep = "")
 WP3_Subset <- readRDS(file = paste(datapath, "10_06_25_Final_Data_Perc_Ch.Rds", sep = ""))
 
 #load lookup table again
-lookup <- read_excel(paste(datapath, "Interventions_lookup_v05.xlsx", sep = ""))
+lookup <- read_excel(paste(datapath, "Interventions_lookup_v06.xlsx", sep = ""))
 lookup <- lookup[3:6] #remove ID and Interventions, we are only interested in Intervention_agg_lvl1 here
 colnames(lookup) <- c("Intervention_agg_lvl1", "Intervention_type", "Intervention_category", "Intervention_sector")
 lookup <- distinct(lookup) #retain only unique rows for matching frequencies later
@@ -113,7 +114,7 @@ for (name in Sectors_data) {
 
 #WP3_Subset <- WP3_Subset[c(1:17, 38, 163:204)]
 
-WP3_subset_long <- pivot_longer(WP3_Subset, c("AFOLU", "Building", "Energy", "Food", "Industry", "Mixed", "Nature", "Transport"), names_to = "Sectors", values_to = "Value")
+WP3_subset_long <- pivot_longer(WP3_Subset, c("AFOLU", "Building", "Energy", "Food", "Industry", "Cross-sector", "Nature", "Transport"), names_to = "Sectors", values_to = "Value")
 
 # Group by 'Group' and calculate the sum for each group
 Studies_Count <- WP3_subset_long %>%
@@ -263,13 +264,13 @@ e <- d/b/c +
   plot_layout(heights = c(0.25,1,1), axis_titles = "collect_x")
 e
 
-pdf(paste(figpath, "Figure_2.pdf", sep = ""), height = 10, width = 14)
+pdf(paste(figpath, "Figure_3.pdf", sep = ""), height = 10, width = 14)
 combined_plot <- (a|free(e, side = "b", type = "space")) + plot_layout(widths = c(0.7, 0.3)) + plot_annotation(tag_levels = "a", tag_prefix = "(", tag_suffix = ")") 
 combined_plot
 dev.off()
 
 #just heatmap output 
-pdf(paste(figpath, "Interventions_heatmap.pdf", sep = ""), width = 10, height = 10)
+pdf(paste(figpath, "Figure_3a.pdf", sep = ""), width = 10, height = 10)
 a
 dev.off()
 
@@ -279,7 +280,7 @@ f <- b|c|d +
   plot_annotation(tag_levels = "a", tag_prefix = "(", tag_suffix = ")") 
 f
 
-pdf(paste(figpath, "Interventions_categories.pdf", sep = ""), width = 14, height = 4)
+pdf(paste(figpath, "Figure_3_b_c_d.pdf", sep = ""), width = 14, height = 4)
 f
 dev.off()
 
@@ -287,4 +288,3 @@ dev.off()
 write.csv(Studies_Count, file = paste(tablepath, "Intervention_sector_frequency.csv", sep = ""))
 write.csv(Studies_Count2, file = paste(tablepath, "Intervention_type_frequency.csv", sep = ""))
 write.csv(Studies_Count3, file = paste(tablepath, "Physical_policy_frequency.csv", sep = ""))
-

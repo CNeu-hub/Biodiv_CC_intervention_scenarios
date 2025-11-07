@@ -56,7 +56,7 @@ data_counts_inter <- data_plot %>%
 #3.) Final boxplot####
 ###
 
-pdf(paste(figpath, "Supplemental_figure_S3.pdf", sep = ""), height = 4, width = 8)
+pdf(paste(figpath, "Supplementary_figure_S4.pdf"), height = 4, width = 8)
 ggplot(data = data_plot, aes(x = Impact, y = Interventions_category, fill = Impact_class)) +
   #facet_wrap(~Impact_class)+
   geom_boxplot() +
@@ -78,4 +78,3 @@ ggplot(data = data_plot, aes(x = Impact, y = Interventions_category, fill = Impa
     plot.title = element_text(face = "bold", hjust = 0.5,size=14),
     strip.text = element_text(size = 14)) 
 dev.off()
-

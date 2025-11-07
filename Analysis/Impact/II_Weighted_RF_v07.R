@@ -26,11 +26,24 @@ tablepath <- paste(getwd(), "/Output/Tables/", sep = "")
 datapath <- paste(getwd(), "/Input/", sep = "")
 
 #load data
-input_data <- readRDS(paste(datapath, "RF_input_data_10_06_25_weighted.rds", sep = ""))
+input_data <- readRDS(paste(datapath, "RF_input_data_10_06_25_weighted.rds"))
 
 #extract separate prepared biodiv and cc datasets
 data_biodiv <- input_data[[1]]
 data_cc <- input_data[[2]]
+
+#interventions <- colnames(data_biodiv[5:17])
+#result_biodiv <- data_biodiv %>% 
+#  summarise(across(all_of(interventions), ~length(unique(Index[.x == 1])), .names = colnames(interventions)))
+
+#interventions <- colnames(data_cc[4:29])
+#result_cc <- data_cc %>% 
+#  summarise(across(all_of(interventions), ~length(unique(Index[.x == 1])), .names = colnames(interventions)))
+
+#write xlsx subset of scenarios as example table for supplementary material
+data_export <- data_biodiv[1:10, ]
+write.csv(data_biodiv[1:10,], file = paste(tablepath, "biodiv_dataset_example.csv"), row.names = FALSE)
+write.csv(data_cc[1:10, ], file = paste(tablepath, sep = "", "cc_dataset_example.csv"), row.names = FALSE)
 
 ###
 #2.) Biodiversity random forest model####
@@ -41,9 +54,11 @@ data_biodiv$Weights <- 1/table(data_biodiv$Index)[as.character(data_biodiv$Index
 
 #create number of interventions categories
 data_biodiv$Interventions_number <- cut(data_biodiv$Interventions_number, breaks = c(0, 5, 10, 20), labels = c(0, 0.5, 1))
+data_biodiv <- data_biodiv %>%
+  rename(Energy_and_building_decarbonization_cluster = Cluster_1) 
 
 #create formula for predictors and confounding factors
-form <- as.formula(paste0("Biodiversity_impact~",  paste(colnames(data_biodiv[5:16]), collapse="+"), " + Cluster_1 + Cluster_2 + Interventions_number + Model + Biodiversity_model + Study_nr. + Biodiversity_indicator"))
+form <- as.formula(paste0("Biodiversity_impact~",  paste(colnames(data_biodiv[5:16]), collapse="+"), " + Energy_and_building_decarbonization_cluster + Cluster_2  + Interventions_number + Model + Biodiversity_model + Study_nr. + Biodiversity_indicator"))
 print(form)
 
 #convert "random effects" (i.e. confounding factors) as factor, because if character, ranger.unify function will encounter a fatal error to R
@@ -52,6 +67,8 @@ data_biodiv$Biodiversity_model <- as.factor(data_biodiv$Biodiversity_model)
 data_biodiv$Biodiversity_indicator <- as.factor(data_biodiv$Biodiversity_indicator)
 data_biodiv$Study_nr. <- as.factor(data_biodiv$Study_nr.)
 
+sub <- subset(data_biodiv, data_biodiv$Negative_emission_technologies == 1)
+n_distinct(sub$Study_nr.)
 #run random forest with ranger package (fast implementation of random forest algorithm by Leo Breiman)
 #max.depth = Controls the maximum depth of the tree. A deeper tree will be able to learn more complex relationships between the features and the target variable, but it is also more likely to overfit the training data
 #num.trees = Number of trees to build (default = 500)
@@ -62,7 +79,7 @@ set.seed(123)
 rf <- ranger::ranger(form, data = data_biodiv, max.depth = 10, num.trees = 1000, mtry = 7,
                      case.weights = data_biodiv$Weights) #balance contribution of observations because of pseudoreplication per scenario)
 
-sink(paste(tablepath, "Biodiv_RF_output.txt", sep = ""))
+sink(paste(tablepath, "Biodiv_RF_output.txt"))
 print(rf)
 sink()
 
@@ -92,7 +109,7 @@ shap_biodiv_bee <- sv_importance(sh, kind = "beeswarm", viridis_args = list(opti
 
 shap_biodiv_bee
 
-interventions <- c(colnames(data_biodiv[5:16]), "Cluster_1", "Cluster_2")
+interventions <- c(colnames(data_biodiv[5:16]), "Energy_and_building_decarbonization_cluster", "Cluster_2")
 
 shap_biodiv_bee$data$color <- ifelse(shap_biodiv_bee$data$feature %in% interventions, 
                                      ifelse(shap_biodiv_bee$data$color == 1, "Intervention applied", "Intervention not applied"),
@@ -125,7 +142,7 @@ shap_biodiv_bar
 
 shap_biodiv_bar|shap_biodiv_bee 
 
-pdf(paste(figpath, "Shap_Biodiversity_weighted.pdf", sep = ""), height = 6, width = 16)
+pdf(paste(figpath, "Figure_5b.pdf"), height = 6, width = 16)
 
 a <- (shap_biodiv_bar|shap_biodiv_bee) +
   plot_layout(guides = "collect") +
@@ -152,9 +169,12 @@ data_cc$Interventions_number <- cut(data_cc$Interventions_number, breaks = c(0, 
 
 #invert climate impact, that impact goes in the same direction as for biodiversity model (positive = positive impact, negative = negative impact i.e. increasing emissions e.g.)
 data_cc$Climate_impact <- data_cc$Climate_impact*-1
+data_cc <- data_cc %>%
+  rename(Energy_and_building_decarbonization_cluster = Cluster_1) %>%
+  rename(Energy_transition_policies_cluster = Cluster_3)
 
 #create formula for input factors 
-form <- as.formula(paste0("Climate_impact~",  paste(colnames(data_cc[4:27]), collapse="+"), "+ Cluster_1 + Cluster_3 +  Interventions_number + Model + Study_nr. + Climate_indicator"))
+form <- as.formula(paste0("Climate_impact~",  paste(colnames(data_cc[4:27]), collapse="+"), "+ Energy_and_building_decarbonization_cluster + Energy_transition_policies_cluster +  Interventions_number + Model + Study_nr. + Climate_indicator"))
 print(form)
 
 #convert "random effects" as factor, because if character, ranger.unify will encounter a fatal error to R
@@ -168,7 +188,7 @@ set.seed(456)
 rf <- ranger::ranger(form, data = data_cc, max.depth = 10, num.trees = 1000, mtry = 9,
                      case.weights = data_cc$Weights) #balance contribution of observations because of pseudoreplication per scenario)
 
-sink(paste(tablepath, "CC_RF_output.txt", sep = ""))
+sink(paste(tablepath, "CC_RF_output.txt"))
 print(rf)
 sink()
 
@@ -199,7 +219,7 @@ shap_cc_bee <- sv_importance(sh, kind = "beeswarm", viridis_args = list(option =
 
 shap_cc_bee
 
-interventions <- c(colnames(data_cc[4:27]), "Cluster_1", "Cluster_3")
+interventions <- c(colnames(data_cc[4:27]), "Energy_and_building_decarbonization_cluster", "Energy_transition_policies_cluster")
 
 shap_cc_bee$data$color <- ifelse(shap_cc_bee$data$feature %in% interventions, 
                                  ifelse(shap_cc_bee$data$color == 1, "Intervention applied", "Intervention not applied"),
@@ -232,7 +252,7 @@ shap_cc_bar
 
 shap_cc_bar|shap_cc_bee
 
-pdf(paste(figpath, "Shap_ClimateChange_weighted.pdf", sep = ""), height = 6, width = 16)
+pdf(paste(figpath, "Figure_5a.pdf"), height = 6, width = 16)
 
 b <- (shap_cc_bar|shap_cc_bee) +
   plot_annotation(title = "Climate change model") &
@@ -252,17 +272,17 @@ dev.off()
 
 #HTML/Markdown-formatted cluster text with bold headers
 cluster_text <- paste0(
-  "<b>Cluster 1:</b> Energy lifestyle changes, Energy technology and efficiency, Renewable energy,<br>", "Building technology and efficiency, Energy constraints, Fossil fuel phase out<br>",
-  "<b>Cluster 3:</b> Traditional bioenergy phase out, Energy taxes"
+  "<b>Energy and building decarbonization cluster:</b> Energy lifestyle changes, Energy technology and efficiency,<br>", "Renewable energy, Building technology and efficiency, Energy constraints, Fossil fuel phase out<br>",
+  "<b>Energy transition policies cluster:</b> Traditional bioenergy phase out, Energy taxes"
 )
 
 #create a rich text grob from cluster text, for plotting with gridExtra package
 table_grob <- richtext_grob(
   cluster_text,
-  gp = gpar(fontsize = 14), x = 0.3, y = 0.5, hjust = 0
+  gp = gpar(fontsize = 14), x = 0.315, y = 0.5, hjust = 0
 )
 
-pdf(paste(figpath, "Figure_4.pdf", sep = ""), height = 12, width = 13)
+pdf(paste(figpath, "Figure_5.pdf"), height = 12, width = 14)
 wrap_elements(b)/wrap_elements(a)/table_grob +
   plot_layout(heights = c(1, 1, 0.11)) +
   plot_annotation(tag_levels = "a", tag_prefix = "(", tag_suffix = ")") 
@@ -277,12 +297,7 @@ sh$X$Climate_indicator <- case_when(sh$X$Climate_indicator == "SDG13_AFOLU_emiss
                                     sh$X$Climate_indicator == "SDG13_Temperature_change_(Since_pre_industrial_age)" ~ "Temperature change",
                                     sh$X$Climate_indicator == "SDG13_AFOLU_CO2_emissions_(Mt_CO2/yr)" ~ "AFOLU CO2 emissions")
 
-cols <- brewer.pal(7, "Dark2")
-RColorBrewer::display.brewer.pal(7, "Dark2")
-#cols = c("red", "red", rep("grey", 5))
-
-#final SHAP dependence plot (for SI)
-pdf(paste(figpath, "Supplemental_figure_S7.pdf", sep = ""), width = 18, height = 16)
+pdf(paste(figpath, "Supplementary_figure_S8.pdf"), width = 18, height = 16)
 dependence2 <- sv_dependence(sh, v = c("Model"), color_var = c("Climate_indicator"), interactions = F, viridis_args = list(option = "turbo")) +
   labs(color = "Climate indicator") +
   scale_color_brewer(palette = "Dark2") +

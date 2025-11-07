@@ -56,7 +56,7 @@ subset <- jaccard$Jaccard_subset
 g <- graph_from_data_frame(subset, directed = FALSE)
 
 #create an pdf export of jaccard similarity of interventions and clusters 
-pdf(paste(figpath, "Supplemental_figure_S6.pdf", sep = ""), width = 18, height = 12)
+pdf(paste(figpath, "Supplementary_figure_S7.pdf"), width = 18, height = 12)
 jaccard$Plot
 plot.igraph(g, main = "Louvain clusters of interventions with jaccard similarity >0.7 (n = 235 scenarios)")
 dev.off()
@@ -84,7 +84,7 @@ data_biodiv_final <- data_biodiv %>%
   mutate(Cluster_2 = ifelse(any(c_across(all_of(cluster2)) == 1), 1, 0)) %>%
   ungroup() %>%
   select(-all_of(cluster1), -all_of(cluster2)) %>%
-  select(Index, Study_nr., Biodiversity_model, Model,, any_of(interventions)[colSums(select(., any_of(interventions))) > 4], Cluster_1, Cluster_2, Biodiversity_impact, Biodiversity_indicator, Interventions_number)
+  select(Index, Study_nr., Biodiversity_model, Model,, any_of(interventions)[colSums(select(., any_of(interventions))) > 4], Cluster_1, Cluster_2, Biodiversity_impact, Biodiversity_indicator, Interventions_number, -Recycling_and_reduced_waste) #removed Recycling and reduced waste because this was not deleted based on condition before but is also only occuring in 4 different scenarios
 
 ###
 #4.) Cluster/prepare climate dataset####
@@ -103,9 +103,9 @@ subset <- jaccard$Jaccard_subset
 g <- graph_from_data_frame(subset, directed = FALSE)
 
 #create an pdf export of jaccard similarity of interventions and clusters 
-pdf(paste(figpath, "Supplemental_figure_S5.pdf", sep = ""), width = 18, height = 12)
+pdf(paste(figpath, "Supplementar_figure_S6.pdf"), width = 18, height = 12)
 jaccard$Plot
-plot.igraph(g, main = "Louvain clusters of interventions with jaccard similarity >0.7 (n = 372 scenarios)")
+plot.igraph(g, main = "Louvain clusters of interventions with jaccard similarity >0.7 (n = 235 scenarios)")
 dev.off()
 
 #components clustering, finds maximal connected pairs of interventions (all pairs that are connected with each other)
@@ -133,6 +133,6 @@ data_cc_final <- data_cc %>%
   select(Index, Study_nr., Model,, any_of(interventions)[colSums(select(., any_of(interventions))) > 4], Cluster_1, Cluster_3, Climate_impact, Climate_indicator, Interventions_number)
 
 #export output data for later input to random forest modelling
-saveRDS(list(data_biodiv_final, data_cc_final), file = paste(datapath, "RF_input_data_10_06_25_weighted.rds", sep = ""))
+saveRDS(list(data_biodiv_final, data_cc_final), file = paste(datapath, "RF_input_data_10_06_25_weighted.rds"))
 
 

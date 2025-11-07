@@ -56,7 +56,7 @@ subset <- jaccard$Jaccard_subset
 #create graph with Jaccard similarity as edge weights
 g <- graph_from_data_frame(subset, directed = FALSE)
 
-pdf(paste(figpath, "Supplemental_figure_S4.pdf", sep = ""), width = 14, height = 10)
+pdf(paste(figpath, "Supplementary_figure_S5.pdf"), width = 14, height = 10)
 jaccard$Plot
 plot.igraph(g, main = "Louvain clusters of interventions with jaccard similarity >0.7 (n = 190 scenarios)")
 dev.off()
@@ -106,9 +106,13 @@ data$color_category <- ifelse(data$Biodiversity_impact < 0,
 sd_deviation <- sd(data$Climate_impact + data$Biodiversity_impact)
 
 #every dot falling into 0.5*sd_deviation will be green (i.e. considered as a synergistic impact with balanced impacts on both, climate and biodiversity)
-data$color_category2 <- ifelse(abs(data$Climate_impact + data$Biodiversity_impact) <= 0.5 * sd_deviation, "Synergistic", 
+data$color_category2 <- ifelse(abs(data$Climate_impact + data$Biodiversity_impact) <= 0.5 * sd_deviation, "Balanced", 
                                ifelse(data$Climate_impact > - data$Biodiversity_impact, "Biodiversity positive", "Climate positive"))
 data$color_category2 <- ifelse(abs(data$Climate_impact > 0) & abs(data$Biodiversity_impact < 0), "Lose-lose", data$color_category2)
+
+#additional trade-offs group
+data$color_category2 <- ifelse(abs(data$Climate_impact < 0) & abs(data$Biodiversity_impact < 0), "Trade-off", data$color_category2)
+data$color_category2 <- ifelse(abs(data$Climate_impact > 0) & abs(data$Biodiversity_impact > 0), "Trade-off", data$color_category2)
 
 data$size_category <- cut(data$Interventions_number, breaks = c(0, 3, 6, 9, 12, 14), labels = c("0-3", "3-6", "6-9", "9-12", ">12"))
 
@@ -121,18 +125,26 @@ data <- data %>%
   ungroup() %>%
   mutate(Intervention_labs = paste(Intervention, " (n = ", Observations, ")", sep = ""))
 
+#write xlsx subset of scenarios as example table for supplementary material
+write.csv(data[1:10, ], file = paste(tablepath, sep = "", "biodiv_cc_dataset_example.csv"), row.names = FALSE)
+
 ###
 #5.) Final plot####
 ###
 
+#optional: just exclude interventions with n < 15
+data <- data %>% 
+  filter(!(Intervention_labs %in% c("Cluster 2 (n = 11)", "Sustainable agricultural intensification (n = 5)"))) %>%
+  mutate(Intervention_labs = case_when(Intervention_labs == "Cluster 1 (n = 96)" ~ "Energy and building decarbonization cluster (n = 96)", 
+                                       TRUE ~ Intervention_labs))
 a <- ggplot() +  
   geom_vline(xintercept = 0, color = "darkgrey", linetype = 4) +
   geom_hline(yintercept = 0, color = "darkgrey", linetype = 4) +
   geom_point(data = data, alpha = 0.5, aes (x = Biodiversity_impact, y = Climate_impact, color = color_category2, size = factor(size_category))) + 
-  facet_wrap(~Intervention_labs, ncol = 3) +
+  facet_wrap(~Intervention_labs, ncol = 2) + 
   #geom_text(data = data %>% distinct(Observations),
   #          aes(label = paste("Observations:", Observations), y = -3.5, x  = 1.5), size = 14/.pt, hjust = 0) + 
-  geom_text(data = data %>% distinct(Intervention_labs, color_category2, Proportions_color_cat2) %>% filter(color_category2 == "Synergistic"),
+  geom_text(data = data %>% distinct(Intervention_labs, color_category2, Proportions_color_cat2) %>% filter(color_category2 == "Balanced"),
             aes(label = paste(Proportions_color_cat2, "%", sep = ""), 
                 color = color_category2), x = 2.2, y = -3.5, size = 14/.pt, hjust = 0) +
   geom_text(data = data %>% distinct(Intervention_labs, color_category2, Proportions_color_cat2) %>% filter(color_category2 == "Biodiversity positive"),
@@ -144,15 +156,15 @@ a <- ggplot() +
   geom_text(data = data %>% distinct(Intervention_labs, color_category2, Proportions_color_cat2) %>% filter(color_category2 == "Lose-lose"),
             aes(label = paste(Proportions_color_cat2, "%", sep = ""), 
                 color = color_category2), x = -1.5, y = -0.5, size = 14/.pt, hjust = 0) +
-  scale_color_manual(values = c("Synergistic" = "#008080", "Biodiversity positive" = "#DAA520", "Climate positive" = "#998EC3", "Lose-lose" = "firebrick")) +
-  #scale_color_manual(values = c("Lose-Lose" = "#5E3C99", 
-  #                              "Lose-Win" = "#B2ABD2", 
-  #                              "Win-Win" = "#E66101", 
-  #                              "Win-Lose" = "#FDB863")) +
+  geom_text(data = data %>% distinct(Intervention_labs, color_category2, Proportions_color_cat2) %>% filter(color_category2 == "Trade-off"),
+            aes(label = paste(Proportions_color_cat2, "%", sep = ""), 
+                color = color_category2), x = -1.5, y = -2, size = 14/.pt, hjust = 0) +
+  scale_color_manual(values = c("Balanced" = "#008080", "Biodiversity positive" = "#DAA520", "Climate positive" = "#998EC3", "Lose-lose" = "firebrick", "Trade-off" = "pink")) +
   geom_abline (slope=-1, linetype = "dashed", color="black") +
   labs(color = "Impact direction", size = "Number of jointly implemented interventions", x = "Biodiversity impact [z-score, absolute change from reference]", y = "Climate impact [z-score, absolute change from reference]") +
   theme_classic() +
   theme(#aspect.ratio = 0.75,
+    strip.background = element_blank(),
     legend.box = "vertical",
     legend.box.just = "left" , 
     legend.justification = "left",
@@ -162,24 +174,27 @@ a <- ggplot() +
     axis.title.y = element_text(margin = margin(t = 0, r = 5, b = 0, l = 0),size=14,face="bold"),
     axis.title.x = element_text(margin = margin(t = 5, r = 0, b = 0, l = 0),size=14,face="bold"),
     plot.title = element_text(face = "bold", hjust = 0.5,size=14),
-    strip.text = element_text(size = 14)) +
+    strip.text = element_text(size = 14, hjust = 0)) +
   guides(Average = guide_legend(title = "Average"))
 
 a
 
 #HTML/Markdown-formatted cluster text with bold headers
+#cluster_text <- paste0(
+#  "<b>Cluster 1:</b> Energy lifestyle changes, Energy technology and efficiency, Renewable energy, Building technology and efficiency,<br>", "Energy constraints, Fossil fuel phase out<br>",
+#  "<b>Cluster 2:</b> Energy trade policies, Slower infrastructure expansion, Sustainable forest management,<br>", "Universal access to basic needs and services, Energy subsidies and incentives, Industry technology and efficiency, Transport lifestyle changes"
+#)
+
 cluster_text <- paste0(
-  "<b>Cluster 1:</b> Energy lifestyle changes, Energy technology and efficiency, Renewable energy, Building technology and efficiency,<br>", "Energy constraints, Fossil fuel phase out<br>",
-  "<b>Cluster 2:</b> Energy trade policies, Slower infrastructure expansion, Sustainable forest management,<br>", "Universal access to basic needs and services, Energy subsidies and incentives, Industry technology and efficiency, Transport lifestyle changes"
-)
+  "<b>Energy and building decarbonization cluster:</b> Energy lifestyle changes, Energy technology and efficiency,<br>", "Renewable energy, Building technology and efficiency, Energy constraints, Fossil fuel phase out<br>")
 
 #create a rich text grob from cluster text, for plotting with gridExtra package
 table_grob <- richtext_grob(
   cluster_text,
-  gp = gpar(fontsize = 14), x = 0.053, y = 0.5, hjust = 0
+  gp = gpar(fontsize = 14), x = 0.066, y = 0.5, hjust = 0
 )
 
-pdf(paste(figpath, "Figure_3.pdf", sep = ""), width = 13, height = 12)
+pdf(paste(figpath, "Figure_4.pdf"), width = 10.5, height = 12)
 
 grid.arrange(a, table_grob, heights = c(3, 0.3))
 

@@ -1,0 +1,11 @@
+"Index","Study_nr.","Model","Agricultural_technology_and_efficiency","Agricultural_trade_policies","CDR_constraints","Diet_changes","Electrification_subsidies","Energy_subsidies_and_incentives","Energy_trade_policies","Equal_burden_sharing","Forestation","Greenhouse_gas_emission_markets","Industry_technology_and_efficiency","Lower_non_energy_demand","Nature_protection","Negative_emission_technologies","Nuclear_energy","Recycling_and_reduced_waste","Reduced_food_waste","Restoration","Slower_infrastructure_expansion","Sustainable_agricultural_intensification","Sustainable_forest_management","Transport_lifestyle_changes","Transport_technology_and_efficiency","Universal_access_to_basic_needs_and_services","Cluster_1","Cluster_3","Climate_impact","Climate_indicator","Interventions_number"
+7,6,"AIM, GLOBIOM, IMAGE, MAGPIE",1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-0.0425234619280407,"SDG13_AFOLU_emissions_(Mt_CO2eq/yr)",2
+8,6,"AIM, GLOBIOM, IMAGE, MAGPIE",0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,-0.148436542796915,"SDG13_AFOLU_emissions_(Mt_CO2eq/yr)",2
+9,6,"AIM, GLOBIOM, IMAGE, MAGPIE",0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,-0.0181908652311972,"SDG13_AFOLU_emissions_(Mt_CO2eq/yr)",2
+10,6,"AIM, GLOBIOM, IMAGE, MAGPIE",1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,-0.062548512477482,"SDG13_AFOLU_emissions_(Mt_CO2eq/yr)",4
+11,6,"AIM, GLOBIOM, IMAGE, MAGPIE",0,0,0,1,0,0,0,0,0,0,0,0,1,0,0,0,1,1,0,0,0,0,0,0,0,0,-0.140856964600033,"SDG13_AFOLU_emissions_(Mt_CO2eq/yr)",4
+12,6,"AIM, GLOBIOM, IMAGE, MAGPIE",1,1,0,1,0,0,0,0,0,0,0,0,1,0,0,0,1,1,0,0,0,0,0,0,0,0,-0.185513692195424,"SDG13_AFOLU_emissions_(Mt_CO2eq/yr)",6
+14,7,"IMAGE",1,1,0,0,0,1,0,0,0,0,1,0,1,1,1,0,0,0,0,0,1,0,0,0,1,0,-2.590946600192,"SDG13_Total_GHG_emissions_(Mt_CO2eq/yr)",10
+14,7,"IMAGE",1,1,0,0,0,1,0,0,0,0,1,0,1,1,1,0,0,0,0,0,1,0,0,0,1,0,-2.47621768827647,"SDG13_Total_CO2_emissions_(Mt_CO2/yr)",10
+14,7,"IMAGE",1,1,0,0,0,1,0,0,0,0,1,0,1,1,1,0,0,0,0,0,1,0,0,0,1,0,-1.23167472655744,"SDG13_Forcing_(W/m_2)",10
+14,7,"IMAGE",1,1,0,0,0,1,0,0,0,0,1,0,1,1,1,0,0,0,0,0,1,0,0,0,1,0,-1.08337343004885,"SDG13_CO2_concentration_(ppm)",10

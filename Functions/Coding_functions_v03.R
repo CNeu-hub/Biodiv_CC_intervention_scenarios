@@ -43,6 +43,6 @@ Eliminate_nas <- function(x) {
 ###
 clean_entries <- function(x) {
   
-  ifelse(grepl("^,", WP3_Subset$Interventions), sub("^,", "", WP3_Subset$Interventions), WP3_Subset$Interventions)
+  ifelse(grepl("^,", x), sub("^,", "", x), x)
   
   }

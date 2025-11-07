@@ -1,0 +1,15 @@
+"","Scenario_class","Scenario_type","Type","Count","Percentages"
+"1","Intervention","exploratory","Scenarios",17,2.8
+"2","Intervention","exploratory","Studies",8,13.3
+"3","Intervention","policy-screening","Scenarios",212,35.3
+"4","Intervention","policy-screening","Studies",11,18.3
+"5","Intervention","reference","Scenarios",14,2.3
+"6","Intervention","reference","Studies",10,16.7
+"7","Intervention","target-seeking","Scenarios",239,39.8
+"8","Intervention","target-seeking","Studies",44,73.3
+"9","Non-intervention","exploratory","Scenarios",52,8.7
+"10","Non-intervention","exploratory","Studies",17,28.3
+"11","Non-intervention","policy-screening","Scenarios",5,0.8
+"12","Non-intervention","policy-screening","Studies",4,6.7
+"13","Non-intervention","reference","Scenarios",62,10.3
+"14","Non-intervention","reference","Studies",42,70
